@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 
-router.post('/:bookId', borrowBook);
+// router.post('/:bookId', borrowBook);
 router.get('/summary', getBorrowSummary);
 
 export default router;
