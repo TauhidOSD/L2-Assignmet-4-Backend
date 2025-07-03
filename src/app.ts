@@ -4,9 +4,7 @@ import bookRoutes from './routes/book.route';
 import borrowRoutes from './routes/borrow.route';
 
 const app = express();
-app.use(cors({
-      origin: ['https://library-frontend-one-iota.vercel.app']
-}));
+app.use(cors());
 app.use(express.json());
 
 

@@ -12,16 +12,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBorrowSummary = exports.borrowBook = void 0;
 const borrow_model_1 = require("../models/borrow.model");
 const book_model_1 = require("../models/book.model");
-// ✅ Borrow Book Controller
 const borrowBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { bookId } = req.params;
         const { quantity, dueDate } = req.body;
         const book = yield book_model_1.Book.findById(bookId);
-        if (!book)
-            return res.status(404).json({ message: "Book not found" });
+        if (!book) {
+            res.status(404).json({ message: "Book not found" });
+            return;
+        }
         if (book.copies < quantity) {
-            return res.status(400).json({ message: "Not enough copies available" });
+            res.status(400).json({ message: "Not enough copies available" });
+            return;
         }
         const borrow = yield borrow_model_1.Borrow.create({
             bookId,
@@ -35,12 +37,11 @@ const borrowBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(201).json(borrow);
     }
     catch (error) {
-        console.error("Borrow error:", error);
-        res.status(500).json({ message: "Failed to borrow book" });
+        console.error(error);
+        res.status(500).json({ message: "Borrowing failed" });
     }
 });
 exports.borrowBook = borrowBook;
-// ✅ Borrow Summary Controller
 const getBorrowSummary = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const summary = yield borrow_model_1.Borrow.aggregate([
@@ -68,11 +69,11 @@ const getBorrowSummary = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 },
             },
         ]);
-        res.status(200).json(summary);
+        res.json(summary);
     }
     catch (error) {
-        console.error("Summary error:", error);
-        res.status(500).json({ message: "Failed to fetch summary" });
+        console.error(error);
+        res.status(500).json({ message: "Summary fetch failed" });
     }
 });
 exports.getBorrowSummary = getBorrowSummary;
